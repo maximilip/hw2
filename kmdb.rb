@@ -92,7 +92,7 @@ studio = Studio.new
 studio["name"] = "Warner Bros."
 studio.save
 
-puts "studios: #{Studio.all.count}"
+# puts "studios: #{Studio.all.count}"
 
 warner_bros = Studio.find_by({"name" => "Warner Bros."})
 
@@ -117,7 +117,7 @@ movie["rated"] = "PG-13"
 movie["studio_id"] = warner_bros["id"]
 movie.save
 
-puts "movies: #{Movie.all.count}"
+# puts "movies: #{Movie.all.count}"
 
 batman_begins = Movie.find_by({"title" => "Batman Begins"})
 dark_knight = Movie.find_by({"title" => "The Dark Knight"})
@@ -167,7 +167,7 @@ actor = Actor.new
 actor["name"] = "Anne Hathaway"
 actor.save
 
-puts "actors: #{Actor.all.count}"
+# puts "actors: #{Actor.all.count}"
 
 christian_bale = Actor.find_by({ "name" => "Christian Bale" })
 michael_caine = Actor.find_by({ "name" => "Michael Caine" })
@@ -274,13 +274,18 @@ role["actor_id"] = anne_hathaway["id"]
 role["character_name"] = "Selina Kyle"
 role.save
 
-puts "roles: #{Role.all.count}"
+# puts "roles: #{Role.all.count}"
 
 agent = Agent.new
 agent["name"] = "Max Prasad"
 agent.save
 
-puts "agents: #{Agent.all.count}"
+# puts "agents: #{Agent.all.count}"
+
+actor = Actor.find_by({ "name" => "Christian Bale" })
+actor["agent_id"] = "1"
+actor.save
+puts actor
 
 # Insert data into the database that reflects the sample data shown above.
 # Do not use hard-coded foreign key IDs.
@@ -294,6 +299,13 @@ puts ""
 # Query the movies data and loop through the results to display the movies output.
 # TODO!
 
+movies = Movie.all
+for movie in movies
+  studio = Studio.find(movie["studio_id"])
+  puts "#{movie["title"]} #{movie["year_released"]} #{movie["rated"]} #{studio["name"]}"
+end
+
+
 # Prints a header for the cast output
 puts ""
 puts "Top Cast"
@@ -303,6 +315,15 @@ puts ""
 # Query the cast data and loop through the results to display the cast output for each movie.
 # TODO!
 
+roles = Role.all
+
+for role in roles
+  movie = Movie.find(role["movie_id"])
+  actor = Actor.find(role["actor_id"])
+  puts "#{movie["title"]} #{actor["name"]} #{role["character_name"]}"
+
+end
+
 # Prints a header for the agent's list of represented actors output
 puts ""
 puts "Represented by agent"
@@ -311,3 +332,8 @@ puts ""
 
 # Query the actor data and loop through the results to display the agent's list of represented actors output.
 # TODO!
+
+actors = Actor.where.not({"agent_id" => nil})
+for actor in actors
+  puts "#{actor["name"]}"     
+end
